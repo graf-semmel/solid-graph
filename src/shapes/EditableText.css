@@ -1,0 +1,11 @@
+/* EditableText.css */
+.editable-text {
+  width: 100%;
+  height: 100%;
+  font-size: 14px;
+  text-align: center;
+  cursor: text;
+  outline: none; /* Remove the default outline when focused */
+  word-wrap: break-word; /* Allow text to break into new lines */
+  overflow: hidden; /* Hide overflow text */
+}
