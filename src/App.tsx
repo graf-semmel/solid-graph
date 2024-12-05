@@ -1,14 +1,12 @@
-import { useState } from "react";
 import "./App.css";
 import Canvas from "./editor/Canvas";
+import { ToolProvider } from "./editor/Toolbar";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <>
+    <ToolProvider>
       <Canvas />
-    </>
+    </ToolProvider>
   );
 }
 

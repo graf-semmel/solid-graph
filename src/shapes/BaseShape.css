@@ -3,5 +3,5 @@
   cursor: pointer;
 }
 .active * {
-  stroke: var(--color-active);
+  color: var(--color-active);
 }

@@ -1,34 +1,73 @@
 // Toolbar.tsx
-import React, { useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import "./Toolbar.css";
 import { Icons } from "./Icons";
 
-const Toolbar: React.FC = () => {
-  const [activeIcon, setActiveIcon] = useState<number | null>(null);
+export type ToolType = "grab" | "select" | "rect";
 
-  const icons = [
-    { component: <Icons.DragMoveIcon />, id: 1 },
-    { component: <Icons.Pointer />, id: 2 },
-  ];
+type Tool = {
+  icon: JSX.Element;
+  type: ToolType;
+  key: string;
+};
 
-  const handleIconClick = (id: number) => {
-    setActiveIcon(id);
+const tools: Tool[] = [
+  { icon: <Icons.DragMoveIcon />, type: "grab", key: "1" },
+  { icon: <Icons.Pointer />, type: "select", key: "2" },
+  { icon: <Icons.Rect />, type: "rect", key: "3" },
+];
+
+export const Toolbar: React.FC<{
+  onToolChange?: (tool: ToolType) => void;
+}> = ({ onToolChange }) => {
+  const { activeTool, setActiveTool } = useTool();
+
+  const handleIconClick = (type: ToolType) => {
+    if (onToolChange) {
+      onToolChange(type);
+    }
+    setActiveTool(type);
   };
 
   return (
     <div className="toolbar">
-      {icons.map((icon, index) => (
+      {tools.map((icon, index) => (
         <div
-          className={`icon-container ${activeIcon === icon.id ? "active" : ""}`}
+          className={`icon-container ${activeTool === icon.type ? "active" : ""}`}
           key={index}
-          onClick={() => handleIconClick(icon.id)}
+          onClick={() => handleIconClick(icon.type)}
         >
-          {icon.component}
-          <span className="icon-number">{icon.id}</span>
+          {icon.icon}
+          <span className="icon-key">{icon.key}</span>
         </div>
       ))}
     </div>
   );
 };
 
-export default Toolbar;
+interface ToolContextProps {
+  activeTool: ToolType | null;
+  setActiveTool: (tool: ToolType | null) => void;
+}
+
+const ToolContext = createContext<ToolContextProps | undefined>(undefined);
+
+export const ToolProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [activeTool, setActiveTool] = useState<ToolType | null>("select");
+  console.log("active tool", activeTool);
+  return (
+    <ToolContext.Provider value={{ activeTool, setActiveTool }}>
+      {children}
+    </ToolContext.Provider>
+  );
+};
+
+export const useTool = (): ToolContextProps => {
+  const context = useContext(ToolContext);
+  if (!context) {
+    throw new Error("useTool must be used within a ToolProvider");
+  }
+  return context;
+};
