@@ -6,6 +6,7 @@ import { Toolbar, ToolType } from "./Toolbar";
 import { DragCanvasTool, CanvasState } from "./DragCanvasTool";
 import { DraggableRectTool } from "./DraggableRectTool";
 import BaseShape from "../shapes/BaseShape";
+import { SelectionTool } from "./SelectionTool";
 
 // Define the interface for the drag state
 export interface Tool {
@@ -35,7 +36,7 @@ const Canvas: React.FC = () => {
         setTool(DragCanvasTool(setCanvasState));
         break;
       case "select":
-        setTool(DragCanvasTool(setCanvasState));
+        setTool(SelectionTool(setRects));
         break;
       case "rect":
         setTool(DraggableRectTool(setRects, canvasState.currentOffset));
