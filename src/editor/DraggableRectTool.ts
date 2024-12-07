@@ -18,10 +18,12 @@ export const DraggableRectTool = (
     const newRect = {
       id: `rect${Date.now()}`,
       title: `Rect ${Date.now()}`,
-      x: startX,
-      y: startY,
-      width: 0,
-      height: 0,
+      shapeProps: {
+        x: startX,
+        y: startY,
+        width: 0,
+        height: 0,
+      },
       isSelected: false,
     };
 
@@ -40,15 +42,15 @@ export const DraggableRectTool = (
       return prevRects.map((rect, index) => {
         if (index !== prevRects.length - 1) return rect;
 
-        const newRect = {
-          ...rect,
+        rect.shapeProps = {
+          ...rect.shapeProps,
           width,
           height,
-          x: currentX < startX ? currentX : rect.x,
-          y: currentY < startY ? currentY : rect.y,
+          x: currentX < startX ? currentX : rect.shapeProps.x,
+          y: currentY < startY ? currentY : rect.shapeProps.y,
         };
 
-        return newRect;
+        return rect;
       });
     });
   }
@@ -60,7 +62,7 @@ export const DraggableRectTool = (
     // check if the rect is too small
     setRects((prevRects) => {
       const lastRect = prevRects[prevRects.length - 1];
-      if (lastRect.width < 10 || lastRect.height < 10) {
+      if (lastRect.shapeProps.width < 10 || lastRect.shapeProps.height < 10) {
         return prevRects.slice(0, prevRects.length - 1);
       }
       console.log("New rect added successfully");

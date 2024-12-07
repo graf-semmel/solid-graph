@@ -61,9 +61,9 @@ const Canvas: React.FC = () => {
           }}
         >
           {rects.map((rect) => (
-            <BaseShape key={rect.id} {...rect} onShapeClick={tool.onShapeClick}>
-              <Rect {...rect} />
-            </BaseShape>
+            // <BaseShape key={rect.id} {...rect} onShapeClick={tool.onShapeClick}>
+            <Rect key={rect.id} {...rect} />
+            // </BaseShape>
           ))}
         </g>
       </svg>
