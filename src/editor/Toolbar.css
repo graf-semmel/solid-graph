@@ -20,6 +20,16 @@
   &:hover {
     color: white;
   }
+  &.active {
+    color: var(--color-active);
+  }
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+  cursor: pointer;
 }
 
 .icon-key {

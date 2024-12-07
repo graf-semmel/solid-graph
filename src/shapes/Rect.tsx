@@ -1,7 +1,6 @@
 // Rectangle.tsx
 import React, { useState } from "react";
 import "./Rect.css";
-import BaseShape from "./BaseShape";
 import EditableText from "./EditableText";
 
 export interface RectProps {
@@ -11,6 +10,7 @@ export interface RectProps {
   width: number;
   height: number;
   title: string;
+  isSelected: boolean;
 }
 
 const Rect: React.FC<RectProps> = ({ id, x, y, width, height, title }) => {
@@ -23,10 +23,9 @@ const Rect: React.FC<RectProps> = ({ id, x, y, width, height, title }) => {
   };
 
   return (
-    <BaseShape {...{ x, y, id }}>
-      <g className="rect">
-        <rect width={width} height={rectHeight} className="rect-shape" />
-        <EditableText
+    <g className="rect">
+      <rect x={x} y={y} width={width} height={height} className="rect-shape" />
+      {/* <EditableText
           x={0}
           y={0}
           width={width}
@@ -34,9 +33,8 @@ const Rect: React.FC<RectProps> = ({ id, x, y, width, height, title }) => {
           text={text}
           onChange={setText}
           onResize={handleResize}
-        />
-      </g>
-    </BaseShape>
+        /> */}
+    </g>
   );
 };
 

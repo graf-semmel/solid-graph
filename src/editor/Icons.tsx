@@ -1,6 +1,3 @@
-// Toolbar.tsx
-import "./Icons.css";
-
 export const Icons = {
   DragMoveIcon: () => (
     <svg

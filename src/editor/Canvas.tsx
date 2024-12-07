@@ -1,82 +1,69 @@
 // DiagramEditor.tsx
 import React, { useState, useRef } from "react";
 import Rect, { RectProps } from "../shapes/Rect";
-import { SelectionProvider } from "../contexts/SelectionContext";
 import "./Canvas.css";
-import { Toolbar, ToolType, useTool } from "./Toolbar";
-import useCanvasDrag from "./useCanvasDrag";
+import { Toolbar, ToolType } from "./Toolbar";
+import { DragCanvasTool, CanvasState } from "./DragCanvasTool";
+import { DraggableRectTool } from "./DraggableRectTool";
+import BaseShape from "../shapes/BaseShape";
+
+// Define the interface for the drag state
+export interface Tool {
+  onMouseDown: (event: React.MouseEvent<SVGSVGElement>) => void;
+  onMouseMove: (event: React.MouseEvent<SVGSVGElement>) => void;
+  onMouseUp: () => void;
+  onShapeClick: (id: string, event: React.MouseEvent<SVGElement>) => void;
+}
 
 const Canvas: React.FC = () => {
   const [rects, setRects] = useState<RectProps[]>([]);
+  const [canvasState, setCanvasState] = useState<CanvasState>({
+    isDragging: false,
+    initialMousePosition: { x: 0, y: 0 },
+    currentOffset: { x: 0, y: 0 },
+  });
   const canvasRef = useRef<SVGSVGElement>(null);
-  const { dragState, handleMouseDown, handleMouseMove, handleMouseUp } =
-    useCanvasDrag();
-  const { activeTool } = useTool();
 
-  const handleCanvasClick = (event: React.MouseEvent<SVGSVGElement>) => {
-    if (dragState.isDragging || activeTool === "grab") return;
+  const [tool, setTool] = useState<Tool>(
+    DraggableRectTool(setRects, canvasState.currentOffset)
+  );
 
-    const rectWidth = 200;
-    const rectHeight = 100;
-    const canvas = event.currentTarget;
-    const canvasRect = canvas.getBoundingClientRect();
-    const newRect: RectProps = {
-      id: `rect${rects.length + 1}`,
-      x:
-        event.clientX -
-        canvasRect.left -
-        rectWidth / 2 -
-        dragState.currentOffset.x,
-      y:
-        event.clientY -
-        canvasRect.top -
-        rectHeight / 2 -
-        dragState.currentOffset.y,
-      width: rectWidth,
-      height: rectHeight,
-      title: `Rect ${rects.length + 1}`,
-    };
-    setRects([...rects, newRect]);
-  };
-
-  function handleToolChange(tool: ToolType) {}
-
-  function getCursor() {
-    if (activeTool === "grab") {
-      if (dragState.isDragging) {
-        return "grabbing";
-      } else {
-        return "grab";
-      }
-    } else {
-      return "default";
+  function handleToolChange(tool: ToolType) {
+    console.log("tool", tool);
+    switch (tool) {
+      case "grab":
+        setTool(DragCanvasTool(setCanvasState));
+        break;
+      case "select":
+        setTool(DragCanvasTool(setCanvasState));
+        break;
+      case "rect":
+        setTool(DraggableRectTool(setRects, canvasState.currentOffset));
+        break;
     }
   }
 
   return (
     <div className="canvas-container">
-      <Toolbar onToolChange={handleToolChange} />
+      <Toolbar initialToolType={"rect"} onToolChange={handleToolChange} />
       <svg
         ref={canvasRef}
         className="canvas"
-        onClick={handleCanvasClick}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        style={{ cursor: getCursor() }}
+        onMouseDown={tool.onMouseDown}
+        onMouseMove={tool.onMouseMove}
+        onMouseUp={tool.onMouseUp}
       >
         <g
           id="canvas-content"
           style={{
-            transform: `translate(${dragState.currentOffset.x}px, ${dragState.currentOffset.y}px)`,
+            transform: `translate(${canvasState.currentOffset.x}px, ${canvasState.currentOffset.y}px)`,
           }}
         >
-          <SelectionProvider>
-            {rects.map((rect) => (
-              <Rect key={rect.id} {...rect} />
-            ))}
-          </SelectionProvider>
+          {rects.map((rect) => (
+            <BaseShape key={rect.id} {...rect} onShapeClick={tool.onShapeClick}>
+              <Rect {...rect} />
+            </BaseShape>
+          ))}
         </g>
       </svg>
     </div>

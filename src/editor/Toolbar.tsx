@@ -18,22 +18,21 @@ const tools: Tool[] = [
 ];
 
 export const Toolbar: React.FC<{
-  onToolChange?: (tool: ToolType) => void;
-}> = ({ onToolChange }) => {
-  const { activeTool, setActiveTool } = useTool();
+  initialToolType: ToolType;
+  onToolChange: (tool: ToolType) => void;
+}> = ({ initialToolType, onToolChange }) => {
+  const [toolType, setToolType] = useState<ToolType>(initialToolType);
 
   const handleIconClick = (type: ToolType) => {
-    if (onToolChange) {
-      onToolChange(type);
-    }
-    setActiveTool(type);
+    onToolChange(type);
+    setToolType(type);
   };
 
   return (
-    <div className="toolbar">
+    <div className={`toolbar ${toolType}`}>
       {tools.map((icon, index) => (
         <div
-          className={`icon-container ${activeTool === icon.type ? "active" : ""}`}
+          className={`icon-container ${toolType === icon.type ? "active" : ""}`}
           key={index}
           onClick={() => handleIconClick(icon.type)}
         >

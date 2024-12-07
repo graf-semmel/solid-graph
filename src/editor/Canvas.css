@@ -6,6 +6,10 @@
   overflow: hidden;
   position: relative;
   border: solid 2px #880000;
+
+  &:has(.toolbar.grab) {
+    cursor: grab;
+  }
 }
 
 .canvas {
