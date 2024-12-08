@@ -20,17 +20,12 @@ export interface ShapeProps {
 const Rect: React.FC<RectProps> = ({ id, title, isSelected, shapeProps }) => {
   const [text, setText] = useState(title);
   const [rectHeight, setRectHeight] = useState(shapeProps.height);
-  const rectRef = React.useRef<SVGRectElement>(null);
-  const { dragState, onMouseDown, onMouseMove, onMouseUp } =
-    useDraggable(rectRef);
   const [selected, setIsSelected] = useState(isSelected);
 
   const handleResize = (newHeight: number) => {
     setRectHeight(newHeight);
     console.log(`Resized to ${newHeight}`);
   };
-
-  // const handlers = selected ? { onMouseDown, onMouseMove, onMouseUp } : {};
 
   function onClick(event: React.MouseEvent<SVGElement>) {
     console.log("Clicked", id);
@@ -39,10 +34,7 @@ const Rect: React.FC<RectProps> = ({ id, title, isSelected, shapeProps }) => {
 
   return (
     <g
-      ref={rectRef}
       className="rect"
-      transform={`translate(${dragState.currentOffset.x}, ${dragState.currentOffset.y})`}
-      style={{ cursor: dragState.isDragging ? "grabbing" : "grab" }}
       onClick={onClick}
       // {...handlers}
     >
