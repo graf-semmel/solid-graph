@@ -30,11 +30,10 @@ const Rect: React.FC<RectProps> = ({ id, title, isSelected, shapeProps }) => {
     console.log(`Resized to ${newHeight}`);
   };
 
-  console.log("Rect rendered", selected);
-
-  const handlers = selected ? { onMouseDown, onMouseMove, onMouseUp } : {};
+  // const handlers = selected ? { onMouseDown, onMouseMove, onMouseUp } : {};
 
   function onClick(event: React.MouseEvent<SVGElement>) {
+    console.log("Clicked", id);
     setIsSelected((prev) => !prev);
   }
 
@@ -45,9 +44,10 @@ const Rect: React.FC<RectProps> = ({ id, title, isSelected, shapeProps }) => {
       transform={`translate(${dragState.currentOffset.x}, ${dragState.currentOffset.y})`}
       style={{ cursor: dragState.isDragging ? "grabbing" : "grab" }}
       onClick={onClick}
-      {...handlers}
+      // {...handlers}
     >
       <rect
+        draggable="true"
         id={id}
         x={shapeProps.x}
         y={shapeProps.y}
