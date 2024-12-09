@@ -7,15 +7,16 @@ export const SelectionTool = (
   let tool: Tool | null = null;
 
   function onMouseDown(event: React.MouseEvent<SVGSVGElement>) {
-    console.group("SelectionTool");
-    console.log("on mouse down");
     const target = event.target as SVGElement;
     if (target.classList.contains("draggable")) {
+      console.group("DragElementTool");
       tool = DragElementTool(setRects);
     }
     if (target.classList.contains("resizable")) {
+      console.group("ResizeElementTool");
       tool = ResizeElementTool(setRects);
     }
+    console.log("on mouse down");
     tool?.onMouseDown(event);
   }
 
