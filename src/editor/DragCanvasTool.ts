@@ -19,6 +19,8 @@ export function DragCanvasTool(
 
   // Handle mouse move event to update the canvas offset
   function onMouseMove(event: React.MouseEvent<SVGSVGElement>) {
+    if (!setDragState) return;
+
     setDragState((prevState) => {
       if (!prevState.isDragging) return prevState;
 
@@ -44,14 +46,10 @@ export function DragCanvasTool(
     }));
   }
 
-  function onShapeClick(id: string, event: React.MouseEvent<SVGElement>) {
-    return;
-  }
-
   return {
     onMouseDown,
     onMouseMove,
     onMouseUp,
-    onShapeClick,
+    onShapeClick: () => {},
   };
 }

@@ -50,9 +50,13 @@ const Canvas: React.FC = () => {
       <svg
         ref={canvasRef}
         className="canvas"
-        onMouseDown={tool.onMouseDown}
-        onMouseMove={tool.onMouseMove}
-        onMouseUp={tool.onMouseUp}
+        onPointerDown={tool.onMouseDown}
+        onPointerMove={tool.onMouseMove}
+        onPointerUp={tool.onMouseUp}
+
+        // onMouseDown={tool.onMouseDown}
+        // onMouseMove={tool.onMouseMove}
+        // onMouseUp={tool.onMouseUp}
       >
         <g
           id="canvas-content"

@@ -2,6 +2,8 @@
 import { RectProps } from "../shapes/Rect";
 import { Tool } from "./Canvas";
 
+const NEW_RECT_ID = "rect-new";
+
 export const DraggableRectTool = (
   setRects: React.Dispatch<React.SetStateAction<RectProps[]>>,
   currentOffset: { x: number; y: number }
@@ -11,19 +13,20 @@ export const DraggableRectTool = (
   let startY: number = 0;
 
   function onMouseDown(event: React.MouseEvent<SVGSVGElement>) {
+    console.group("DraggableRectTool");
+    console.log("onMouseDown");
+
     isDragging = true;
     startX = event.clientX - currentOffset.x;
     startY = event.clientY - currentOffset.y;
 
-    const newRect = {
-      id: `rect${Date.now()}`,
-      title: `Rect ${Date.now()}`,
-      shapeProps: {
-        x: startX,
-        y: startY,
-        width: 0,
-        height: 0,
-      },
+    const newRect: RectProps = {
+      id: NEW_RECT_ID,
+      title: "New Rect",
+      x: startX,
+      y: startY,
+      width: 0,
+      height: 0,
       isSelected: false,
     };
 
@@ -31,6 +34,8 @@ export const DraggableRectTool = (
   }
 
   function onMouseMove(event: React.MouseEvent<SVGSVGElement>) {
+    console.log("onMouseMove");
+
     if (!isDragging) return;
 
     const currentX = event.clientX - currentOffset.x;
@@ -38,47 +43,56 @@ export const DraggableRectTool = (
     const width = Math.abs(currentX - startX);
     const height = Math.abs(currentY - startY);
 
-    setRects((prevRects) => {
-      return prevRects.map((rect, index) => {
-        if (index !== prevRects.length - 1) return rect;
-
-        rect.shapeProps = {
-          ...rect.shapeProps,
-          width,
-          height,
-          x: currentX < startX ? currentX : rect.shapeProps.x,
-          y: currentY < startY ? currentY : rect.shapeProps.y,
-        };
-
+    setRects((prevRects) =>
+      prevRects.map((rect) => {
+        if (rect.id === NEW_RECT_ID) {
+          return {
+            ...rect,
+            width,
+            height,
+            x: currentX < startX ? currentX : startX,
+            y: currentY < startY ? currentY : startY,
+          };
+        }
         return rect;
-      });
-    });
+      })
+    );
   }
 
   function onMouseUp() {
+    console.log("onMouseUp");
+
     if (!isDragging) return;
 
     isDragging = false;
-    // check if the rect is too small
     setRects((prevRects) => {
-      const lastRect = prevRects[prevRects.length - 1];
-      if (lastRect.shapeProps.width < 10 || lastRect.shapeProps.height < 10) {
-        return prevRects.slice(0, prevRects.length - 1);
+      const newRectIndex = prevRects.findIndex(
+        (rect) => rect.id === NEW_RECT_ID
+      );
+      if (newRectIndex === -1) {
+        console.warn("new rect not found");
+        console.groupEnd();
+        return prevRects;
       }
-      console.log("New rect added successfully");
 
+      const newRect = prevRects[newRectIndex];
+      if (newRect.width <= 10 || newRect.height <= 10) {
+        console.log("new rect too small, removing");
+        console.groupEnd();
+        return prevRects.filter((rect) => rect.id !== NEW_RECT_ID);
+      }
+
+      newRect.id = `rect-${Date.now()}`;
+      console.log("adding new rect", newRect);
+      console.groupEnd();
       return prevRects;
     });
-  }
-
-  function onShapeClick(id: string, event: React.MouseEvent<SVGElement>) {
-    return;
   }
 
   return {
     onMouseDown,
     onMouseMove,
     onMouseUp,
-    onShapeClick,
+    onShapeClick: () => {},
   };
 };

@@ -7,19 +7,23 @@ export interface RectProps {
   id: string;
   title: string;
   isSelected: boolean;
-  shapeProps: ShapeProps;
-}
-
-export interface ShapeProps {
   x: number;
   y: number;
   width: number;
   height: number;
 }
 
-const Rect: React.FC<RectProps> = ({ id, title, isSelected, shapeProps }) => {
+const Rect: React.FC<RectProps> = ({
+  id,
+  title,
+  isSelected,
+  x,
+  y,
+  width,
+  height,
+}) => {
   const [text, setText] = useState(title);
-  const [rectHeight, setRectHeight] = useState(shapeProps.height);
+  const [rectHeight, setRectHeight] = useState(height);
   const [selected, setIsSelected] = useState(isSelected);
 
   const handleResize = (newHeight: number) => {
@@ -33,24 +37,20 @@ const Rect: React.FC<RectProps> = ({ id, title, isSelected, shapeProps }) => {
   }
 
   return (
-    <g
-      className="rect"
-      onClick={onClick}
-      // {...handlers}
-    >
+    <g className="rect" onClick={onClick}>
       <rect
         draggable="true"
         id={id}
-        x={shapeProps.x}
-        y={shapeProps.y}
-        width={shapeProps.width}
-        height={shapeProps.height}
+        x={x}
+        y={y}
+        width={width}
+        height={height}
         className="rect-shape"
       />
       {/* <EditableText
         x={0}
         y={0}
-        width={shapeProps.width}
+        width={width}
         height={rectHeight}
         text={text}
         onChange={setText}
