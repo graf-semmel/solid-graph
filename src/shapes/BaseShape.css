@@ -1,6 +1,6 @@
 /* BaseShape.css */
 .base-shape {
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 .active * {
   stroke: var(--color-active);

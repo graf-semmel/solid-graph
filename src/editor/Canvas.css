@@ -6,14 +6,28 @@
   overflow: hidden;
   position: relative;
   border: solid 2px #880000;
-
-  &:has(.toolbar.grab) {
-    cursor: grab;
-  }
 }
 
 .canvas {
   width: 100%;
   height: 100%;
   border: solid 2px #000088;
+  &.grab {
+    cursor: grab;
+    &:active {
+      cursor: grabbing;
+    }
+  }
+  &.rect {
+    cursor: crosshair;
+  }
+  &.select {
+    cursor: default;
+    .draggable {
+      cursor: move;
+    }
+    .resizable {
+      cursor: crosshair;
+    }
+  }
 }

@@ -24,6 +24,7 @@ const Canvas: React.FC = () => {
     currentOffset: { x: 0, y: 0 },
   });
   const canvasRef = useRef<SVGSVGElement>(null);
+  const toolTypeRef = useRef<ToolType>("rect");
 
   const [tool, setTool] = useState<Tool>(
     DraggableRectTool(setRects, canvasState.currentOffset)
@@ -31,6 +32,7 @@ const Canvas: React.FC = () => {
 
   function handleToolChange(tool: ToolType) {
     console.log("tool", tool);
+    toolTypeRef.current = tool;
     switch (tool) {
       case "grab":
         setTool(DragCanvasTool(setCanvasState));
@@ -46,10 +48,13 @@ const Canvas: React.FC = () => {
 
   return (
     <div className="canvas-container">
-      <Toolbar initialToolType={"rect"} onToolChange={handleToolChange} />
+      <Toolbar
+        initialToolType={toolTypeRef.current}
+        onToolChange={handleToolChange}
+      />
       <svg
         ref={canvasRef}
-        className="canvas"
+        className={`canvas ${toolTypeRef.current}`}
         onPointerDown={tool.onMouseDown}
         onPointerMove={tool.onMouseMove}
         onPointerUp={tool.onMouseUp}
