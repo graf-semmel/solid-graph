@@ -5,3 +5,6 @@
 .active * {
   stroke: var(--color-active);
 }
+.resize-handle {
+  fill: var(--color-active);
+}

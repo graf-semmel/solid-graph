@@ -27,10 +27,13 @@ export const DraggableRectTool = (
       y: startY,
       width: 0,
       height: 0,
-      isSelected: false,
+      isSelected: true,
     };
 
-    setRects((prevRects) => [...prevRects, newRect]);
+    setRects((prevRects) => [
+      ...prevRects.map((p) => ({ ...p, isSelected: false })),
+      newRect,
+    ]);
   }
 
   function onMouseMove(event: React.MouseEvent<SVGSVGElement>) {
@@ -69,6 +72,7 @@ export const DraggableRectTool = (
       const newRectIndex = prevRects.findIndex(
         (rect) => rect.id === NEW_RECT_ID
       );
+
       if (newRectIndex === -1) {
         console.warn("new rect not found");
         console.groupEnd();

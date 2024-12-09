@@ -24,6 +24,15 @@ export const SelectionTool = (
     startX = event.clientX;
     startY = event.clientY;
     selectedElementId = target.id;
+    setRects((prevRects) =>
+      prevRects.map((rect) => {
+        rect.isSelected = false;
+        if (rect.id === selectedElementId) {
+          return { ...rect, isSelected: true };
+        }
+        return rect;
+      })
+    );
   }
 
   function handleMouseMove(event: React.MouseEvent<SVGSVGElement>) {
@@ -35,11 +44,13 @@ export const SelectionTool = (
 
     setRects((prevRects) =>
       prevRects.map((rect) => {
+        rect.isSelected = false;
         if (rect.id === selectedElementId) {
           return {
             ...rect,
             x: rect.x + deltaX,
             y: rect.y + deltaY,
+            isSelected: true,
           };
         }
         return rect;
