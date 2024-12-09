@@ -19,10 +19,14 @@ const BaseShape: React.FC<BaseShapeProps> = ({
   const [bbox, setBbox] = useState<DOMRect | null>(null);
   const handles = bbox
     ? [
-        { x: bbox.x - 5, y: bbox.y - 5 },
-        { x: bbox.x + bbox.width - 5, y: bbox.y - 5 },
-        { x: bbox.x - 5, y: bbox.y + bbox.height - 5 },
-        { x: bbox.x + bbox.width - 5, y: bbox.y + bbox.height - 5 },
+        { x: bbox.x - 5, y: bbox.y - 5, label: "nw" },
+        { x: bbox.x + bbox.width - 5, y: bbox.y - 5, label: "ne" },
+        { x: bbox.x - 5, y: bbox.y + bbox.height - 5, label: "sw" },
+        {
+          x: bbox.x + bbox.width - 5,
+          y: bbox.y + bbox.height - 5,
+          label: "se",
+        },
       ]
     : [];
 
@@ -56,7 +60,9 @@ const BaseShape: React.FC<BaseShapeProps> = ({
               y={handle.y}
               width={10}
               height={10}
-              className="resize-handle"
+              className="resizable"
+              origin={`${handle.label}`}
+              target={id}
             />
           ))}
         </g>

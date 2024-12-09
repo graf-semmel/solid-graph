@@ -39,13 +39,12 @@ const Rect: React.FC<RectProps> = ({
   return (
     <g className="rect" onClick={onClick}>
       <rect
-        draggable="true"
         id={id}
         x={x}
         y={y}
         width={width}
         height={height}
-        className="rect-shape"
+        className="rect-shape draggable"
       />
       {/* <EditableText
         x={0}
