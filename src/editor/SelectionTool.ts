@@ -16,7 +16,7 @@ export const SelectionTool = (
       console.group("ResizeElementTool");
       tool = ResizeElementTool(setRects);
     }
-    console.log("on mouse down");
+    console.log("on mouse down", target);
     tool?.onMouseDown(event);
   }
 

@@ -2,9 +2,24 @@
 .base-shape {
   /* cursor: pointer; */
 }
-.active * {
-  stroke: var(--color-active);
+.resizable.corner {
+  fill: var(--color-active);
+  cursor: crosshair;
 }
-.resizable {
+.resizable.edge {
+  &[origin="s"] {
+    cursor: ns-resize;
+  }
+  &[origin="n"] {
+    cursor: ns-resize;
+  }
+  &[origin="e"] {
+    cursor: ew-resize;
+  }
+  &[origin="w"] {
+    cursor: ew-resize;
+  }
+}
+.edge-forground {
   fill: var(--color-active);
 }

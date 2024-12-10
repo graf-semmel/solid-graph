@@ -26,8 +26,5 @@
     .draggable {
       cursor: move;
     }
-    .resizable {
-      cursor: crosshair;
-    }
   }
 }
