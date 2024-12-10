@@ -1,5 +1,5 @@
 // DiagramEditor.tsx
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Rect, { RectProps } from "../shapes/Rect";
 import "./Canvas.css";
 import { Toolbar, ToolType } from "./Toolbar";
@@ -16,8 +16,35 @@ export interface Tool {
   onShapeClick: (id: string, event: React.MouseEvent<SVGElement>) => void;
 }
 
+const initialRects: RectProps[] = [
+  {
+    id: "1",
+    x: 10,
+    y: 10,
+    width: 100,
+    height: 100,
+    isSelected: false,
+  },
+  {
+    id: "2",
+    x: -150,
+    y: -150,
+    width: 100,
+    height: 100,
+    isSelected: false,
+  },
+  {
+    id: "3",
+    x: 100,
+    y: 100,
+    width: 50,
+    height: 50,
+    isSelected: false,
+  },
+];
+
 const Canvas: React.FC = () => {
-  const [rects, setRects] = useState<RectProps[]>([]);
+  const [rects, setRects] = useState<RectProps[]>(initialRects);
   const [canvasState, setCanvasState] = useState<CanvasState>({
     isDragging: false,
     initialMousePosition: { x: 0, y: 0 },
@@ -25,13 +52,40 @@ const Canvas: React.FC = () => {
   });
   const canvasRef = useRef<SVGSVGElement>(null);
   const toolTypeRef = useRef<ToolType>("rect");
-
   const [tool, setTool] = useState<Tool>(
     DraggableRectTool(setRects, canvasState.currentOffset)
   );
 
+  useEffect(() => {
+    // center the canvas
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const { width, height } = canvas.getBoundingClientRect();
+      const offsetX = width / 2;
+      const offsetY = height / 2;
+      // update initial rects
+      setRects(
+        rects.map((rect) => ({
+          ...rect,
+          x: rect.x + offsetX,
+          y: rect.y + offsetY,
+        }))
+      );
+    }
+  }, []);
+
   function handleToolChange(tool: ToolType) {
-    console.log("tool", tool);
+    console.log("select tool", tool);
+    if (tool === toolTypeRef.current) {
+      return;
+    }
+
+    if (tool !== "select") {
+      setRects((prevRects) =>
+        prevRects.map((rect) => ({ ...rect, isSelected: false }))
+      );
+    }
+
     toolTypeRef.current = tool;
     switch (tool) {
       case "grab":

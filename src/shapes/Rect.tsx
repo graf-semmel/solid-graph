@@ -5,7 +5,7 @@ import EditableText from "./EditableText";
 
 export interface RectProps {
   id: string;
-  title: string;
+  title?: string;
   isSelected: boolean;
   x: number;
   y: number;
