@@ -134,6 +134,7 @@ function ResizeElementTool(
     | "se"
     | "sw"
     | null = null;
+  const minSize = 20;
 
   function onMouseDown(event: React.MouseEvent<SVGSVGElement>) {
     const target = event.target as SVGElement;
@@ -177,58 +178,68 @@ function ResizeElementTool(
     setRects((prevRects) =>
       prevRects.map((rect) => {
         if (rect.id === targetId) {
+          let newRect = { ...rect };
           switch (resizeDirection) {
             case "n":
-              return {
+              newRect = {
                 ...rect,
-                y: rect.y + deltaY,
-                height: rect.height - deltaY,
+                y: rect.height - deltaY >= minSize ? rect.y + deltaY : rect.y,
+                height: Math.max(rect.height - deltaY, minSize),
               };
+              break;
             case "s":
-              return {
+              newRect = {
                 ...rect,
-                height: rect.height + deltaY,
+                height: Math.max(rect.height + deltaY, minSize),
               };
+              break;
             case "e":
-              return {
+              newRect = {
                 ...rect,
-                width: rect.width + deltaX,
+                width: Math.max(rect.width + deltaX, minSize),
               };
+              break;
             case "w":
-              return {
+              newRect = {
                 ...rect,
-                x: rect.x + deltaX,
-                width: rect.width - deltaX,
+                x: rect.width - deltaX >= minSize ? rect.x + deltaX : rect.x,
+                width: Math.max(rect.width - deltaX, minSize),
               };
+              break;
             case "ne":
-              return {
+              newRect = {
                 ...rect,
-                y: rect.y + deltaY,
-                height: rect.height - deltaY,
-                width: rect.width + deltaX,
+                y: rect.height - deltaY >= minSize ? rect.y + deltaY : rect.y,
+                height: Math.max(rect.height - deltaY, minSize),
+                width: Math.max(rect.width + deltaX, minSize),
               };
+              break;
             case "nw":
-              return {
+              newRect = {
                 ...rect,
-                x: rect.x + deltaX,
-                y: rect.y + deltaY,
-                width: rect.width - deltaX,
-                height: rect.height - deltaY,
+                x: rect.width - deltaX >= minSize ? rect.x + deltaX : rect.x,
+                y: rect.height - deltaY >= minSize ? rect.y + deltaY : rect.y,
+                width: Math.max(rect.width - deltaX, minSize),
+                height: Math.max(rect.height - deltaY, minSize),
               };
+              break;
             case "se":
-              return {
+              newRect = {
                 ...rect,
-                height: rect.height + deltaY,
-                width: rect.width + deltaX,
+                height: Math.max(rect.height + deltaY, minSize),
+                width: Math.max(rect.width + deltaX, minSize),
               };
+              break;
             case "sw":
-              return {
+              newRect = {
                 ...rect,
-                x: rect.x + deltaX,
-                width: rect.width - deltaX,
-                height: rect.height + deltaY,
+                x: rect.width - deltaX >= minSize ? rect.x + deltaX : rect.x,
+                width: Math.max(rect.width - deltaX, minSize),
+                height: Math.max(rect.height + deltaY, minSize),
               };
+              break;
           }
+          return newRect;
         }
         return rect;
       })
