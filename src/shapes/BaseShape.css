@@ -23,3 +23,7 @@
 .edge-forground {
   fill: var(--color-active);
 }
+text {
+  fill: var(--color-fg);
+  user-select: none;
+}

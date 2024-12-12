@@ -7,6 +7,7 @@ import { DragCanvasTool, CanvasState } from "./DragCanvasTool";
 import { DraggableRectTool } from "./DraggableRectTool";
 import BaseShape from "../shapes/BaseShape";
 import { SelectionTool } from "./SelectionTool";
+import { Ellipse } from "../shapes/Ellipse";
 
 // Define the interface for the drag state
 export interface Tool {
@@ -19,27 +20,33 @@ export interface Tool {
 const initialRects: RectProps[] = [
   {
     id: "1",
+    text: "Rect 1",
     x: 10,
     y: 10,
     width: 100,
     height: 100,
     isSelected: false,
+    isEditingText: false,
   },
   {
     id: "2",
+    text: "Rect 2",
     x: -150,
     y: -150,
     width: 100,
     height: 100,
     isSelected: false,
+    isEditingText: false,
   },
   {
     id: "3",
+    text: "Rect 3",
     x: 100,
     y: 100,
     width: 50,
     height: 50,
     isSelected: false,
+    isEditingText: false,
   },
 ];
 
@@ -112,10 +119,6 @@ const Canvas: React.FC = () => {
         onPointerDown={tool.onMouseDown}
         onPointerMove={tool.onMouseMove}
         onPointerUp={tool.onMouseUp}
-
-        // onMouseDown={tool.onMouseDown}
-        // onMouseMove={tool.onMouseMove}
-        // onMouseUp={tool.onMouseUp}
       >
         <g
           id="canvas-content"
@@ -125,7 +128,7 @@ const Canvas: React.FC = () => {
         >
           {rects.map((rect) => (
             <BaseShape key={rect.id} {...rect} onShapeClick={tool.onShapeClick}>
-              <Rect key={rect.id} {...rect} />
+              <Ellipse key={rect.id} {...rect} />
             </BaseShape>
           ))}
         </g>

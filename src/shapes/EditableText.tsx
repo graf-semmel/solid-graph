@@ -1,77 +1,78 @@
-// EditableText.tsx
-import React, { useEffect, useRef } from "react";
-import "./EditableText.css";
+import { useRef, useEffect } from "react";
 
-interface EditableTextProps {
+export interface EditableTextProps {
   x: number;
   y: number;
   width: number;
   height: number;
   text: string;
-  onChange?: (newText: string) => void;
-  onResize?: (newHeight: number) => void;
+  isEditing: boolean;
+  onTextChange: (text: string) => void;
 }
 
-const EditableText: React.FC<EditableTextProps> = ({
+export const EditableText: React.FC<EditableTextProps> = ({
   x,
   y,
   width,
   height,
   text,
-  onChange,
-  onResize,
+  isEditing,
+  onTextChange,
 }) => {
-  const textRef = useRef<HTMLDivElement>(null);
+  const editableDivRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (textRef.current) {
-      // select all text when the component is mounted
+    if (isEditing && editableDivRef.current) {
       const range = document.createRange();
-      range.selectNodeContents(textRef.current);
+      range.selectNodeContents(editableDivRef.current);
       const selection = window.getSelection();
-      selection?.removeAllRanges();
-      selection?.addRange(range);
-    }
-  }, []);
-
-  useEffect(() => {
-    const handleResize = (entries: ResizeObserverEntry[]) => {
-      console.log(entries);
-      for (let entry of entries) {
-        if (onResize && entry.contentRect.height > height) {
-          onResize(entry.contentRect.height);
-        }
+      if (selection) {
+        selection.removeAllRanges();
+        selection.addRange(range);
       }
-    };
-
-    const resizeObserver = new ResizeObserver(handleResize);
-    if (textRef.current) {
-      resizeObserver.observe(textRef.current);
     }
+  }, [isEditing]);
 
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, [height, onResize]);
+  function onTextChanged(event: React.FocusEvent<HTMLDivElement>) {
+    onTextChange(event.target.textContent || "");
+  }
 
-  const handleBlur = () => {
-    if (textRef.current) {
-      onChange && onChange(textRef.current.textContent || "");
-    }
-  };
-
-  return (
-    <foreignObject x={x} y={y} width={width} height={height}>
+  return isEditing ? (
+    <foreignObject
+      x={x}
+      y={y}
+      width={width}
+      height={height}
+      pointerEvents="none"
+    >
       <div
-        ref={textRef}
-        className="editable-text"
+        ref={editableDivRef}
         contentEditable
-        onBlur={handleBlur}
+        suppressContentEditableWarning
+        onBlur={onTextChanged}
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          overflow: "hidden",
+          wordWrap: "break-word",
+        }}
       >
         {text}
       </div>
     </foreignObject>
+  ) : (
+    <text
+      x={x + width / 2}
+      y={y + height / 2}
+      textAnchor="middle"
+      alignmentBaseline="middle"
+      focusable="false"
+      pointerEvents="none"
+    >
+      {text}
+    </text>
   );
 };
-
-export default EditableText;

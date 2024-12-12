@@ -5,9 +5,3 @@
   stroke: var(--color-shape-fg);
   stroke-width: 2;
 }
-
-.rect-title {
-  text-anchor: middle;
-  alignment-baseline: middle;
-  font-size: 14px;
-}

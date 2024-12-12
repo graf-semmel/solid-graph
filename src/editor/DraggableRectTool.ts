@@ -22,16 +22,21 @@ export const DraggableRectTool = (
 
     const newRect: RectProps = {
       id: NEW_RECT_ID,
-      title: "New Rect",
+      text: "New Rect",
       x: startX,
       y: startY,
       width: 0,
       height: 0,
       isSelected: true,
+      isEditingText: false,
     };
 
     setRects((prevRects) => [
-      ...prevRects.map((p) => ({ ...p, isSelected: false })),
+      ...prevRects.map((p) => ({
+        ...p,
+        isSelected: false,
+        isEditingText: false,
+      })),
       newRect,
     ]);
   }
@@ -87,9 +92,10 @@ export const DraggableRectTool = (
       }
 
       newRect.id = `rect-${Date.now()}`;
+      newRect.isEditingText = true;
       console.log("adding new rect", newRect);
       console.groupEnd();
-      return prevRects;
+      return [...prevRects];
     });
   }
 

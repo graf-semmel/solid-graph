@@ -1,43 +1,45 @@
-// Rectangle.tsx
 import React, { useState } from "react";
+import { EditableText } from "./EditableText";
 import "./Rect.css";
-import EditableText from "./EditableText";
 
 export interface RectProps {
   id: string;
-  title?: string;
-  isSelected: boolean;
   x: number;
   y: number;
   width: number;
   height: number;
+  isSelected: boolean;
+  text?: string;
+  isEditingText: boolean;
+  onTextChange?: (text: string) => void;
 }
 
 const Rect: React.FC<RectProps> = ({
   id,
-  title,
+  text: initialText = "",
   isSelected,
+  isEditingText,
   x,
   y,
   width,
   height,
 }) => {
-  const [text, setText] = useState(title);
-  const [rectHeight, setRectHeight] = useState(height);
-  const [selected, setIsSelected] = useState(isSelected);
+  const [text, setText] = useState(initialText);
+  const [isEditing, setIsEditing] = useState(isEditingText);
 
-  const handleResize = (newHeight: number) => {
-    setRectHeight(newHeight);
-    console.log(`Resized to ${newHeight}`);
+  const onClick = (event: React.MouseEvent<SVGRectElement>) => {
+    if (event.detail === 2) {
+      setIsEditing(true);
+    }
   };
 
-  function onClick(event: React.MouseEvent<SVGElement>) {
-    console.log("Clicked", id);
-    setIsSelected((prev) => !prev);
-  }
+  const onTextChange = (newText: string) => {
+    setText(newText);
+    setIsEditing(false);
+  };
 
   return (
-    <g className="rect" onClick={onClick}>
+    <g className="rect">
       <rect
         id={id}
         x={x}
@@ -45,102 +47,19 @@ const Rect: React.FC<RectProps> = ({
         width={width}
         height={height}
         className="rect-shape draggable"
+        onClick={onClick}
       />
-      {/* <EditableText
-        x={0}
-        y={0}
+      <EditableText
+        x={x}
+        y={y}
         width={width}
-        height={rectHeight}
+        height={height}
         text={text}
-        onChange={setText}
-        onResize={handleResize}
-      /> */}
+        isEditing={isEditing}
+        onTextChange={onTextChange}
+      />
     </g>
   );
 };
 
 export default Rect;
-
-interface DragState {
-  isDragging: boolean;
-  initialMousePosition: { x: number; y: number };
-  currentOffset: { x: number; y: number };
-  initialParentIndex: number;
-}
-
-export function useDraggable(rectRef: React.RefObject<SVGRectElement>) {
-  const [dragState, setDragState] = useState<DragState>({
-    isDragging: false,
-    initialMousePosition: { x: 0, y: 0 },
-    currentOffset: { x: 0, y: 0 },
-    initialParentIndex: -1,
-  });
-
-  function onMouseDown(event: React.MouseEvent<SVGRectElement>) {
-    if (!rectRef.current) return;
-
-    const parent = rectRef.current.parentNode;
-    const children = Array.from(parent!.children);
-    const initialParentIndex = children.indexOf(rectRef.current);
-    console.log("initialParentIndex", initialParentIndex, rectRef);
-
-    setDragState((prevState) => ({
-      ...prevState,
-      isDragging: true,
-      initialMousePosition: { x: event.clientX, y: event.clientY },
-      initialParentIndex,
-    }));
-
-    parent!.appendChild(rectRef.current);
-    event.stopPropagation();
-  }
-
-  function onMouseMove(event: React.MouseEvent<SVGRectElement>) {
-    if (!dragState.isDragging) return;
-
-    setDragState((prevState) => {
-      if (!prevState.isDragging) return prevState;
-
-      const deltaX = event.clientX - prevState.initialMousePosition.x;
-      const deltaY = event.clientY - prevState.initialMousePosition.y;
-
-      return {
-        ...prevState,
-        currentOffset: {
-          x: prevState.currentOffset.x + deltaX,
-          y: prevState.currentOffset.y + deltaY,
-        },
-        initialMousePosition: { x: event.clientX, y: event.clientY },
-      };
-    });
-    event.stopPropagation();
-  }
-
-  function onMouseUp() {
-    if (!dragState.isDragging) return;
-
-    if (rectRef.current && dragState.initialParentIndex !== -1) {
-      const parent = rectRef.current.parentNode;
-      const children = Array.from(parent!.children);
-      const initialParentIndex = dragState.initialParentIndex;
-
-      if (initialParentIndex < children.length) {
-        parent!.insertBefore(rectRef.current, children[initialParentIndex]);
-      } else {
-        parent!.appendChild(rectRef.current);
-      }
-    }
-
-    setDragState((prevState) => ({
-      ...prevState,
-      isDragging: false,
-    }));
-  }
-
-  return {
-    dragState,
-    onMouseDown,
-    onMouseMove,
-    onMouseUp,
-  };
-}

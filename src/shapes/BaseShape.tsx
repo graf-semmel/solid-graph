@@ -142,16 +142,16 @@ const BaseShape: React.FC<BaseShapeProps> = ({
     }
   }, [children]);
 
-  const handleClick = (e: React.MouseEvent<SVGGElement>) => {
-    console.log(`Clicked ${id}`);
-    onShapeClick(id, e);
-  };
+  // const handleClick = (e: React.MouseEvent<SVGGElement>) => {
+  // console.log(`Clicked ${id}`);
+  // onShapeClick(id, e);
+  // };
 
   return (
     <g>
       <g
         ref={shapeRef}
-        onClick={handleClick}
+        // onClick={handleClick}
         className={isSelected ? "base-shape active" : "base-shape"}
       >
         {children}
