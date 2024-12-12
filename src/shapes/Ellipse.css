@@ -1,0 +1,6 @@
+ellipse {
+  fill: var(--color-shape-bg);
+  color: var(--color-shape-fg);
+  stroke: var(--color-shape-fg);
+  stroke-width: 2;
+}
