@@ -1,20 +1,9 @@
 import React, { useState } from "react";
 import { EditableText } from "./EditableText";
 import "./Ellipse.css";
+import { ShapeProps } from "./Shape";
 
-export interface RectProps {
-  id: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  isSelected: boolean;
-  text?: string;
-  isEditingText: boolean;
-  onTextChange?: (text: string) => void;
-}
-
-export const Ellipse: React.FC<RectProps> = ({
+export const Ellipse: React.FC<ShapeProps> = ({
   id,
   text: initialText = "",
   isSelected,

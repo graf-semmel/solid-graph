@@ -1,9 +1,20 @@
 import React, { useState } from "react";
 import { EditableText } from "./EditableText";
-import "./Rect.css";
-import { ShapeProps } from "./Shape";
+import "./Circle.css";
 
-export const Rect: React.FC<ShapeProps> = ({
+export interface RectProps {
+  id: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  isSelected: boolean;
+  text?: string;
+  isEditingText: boolean;
+  onTextChange?: (text: string) => void;
+}
+
+const Ellipse: React.FC<RectProps> = ({
   id,
   text: initialText = "",
   isSelected,
@@ -13,10 +24,11 @@ export const Rect: React.FC<ShapeProps> = ({
   width,
   height,
 }) => {
+  w;
   const [text, setText] = useState(initialText);
   const [isEditing, setIsEditing] = useState(isEditingText);
 
-  const onClick = (event: React.MouseEvent<SVGRectElement>) => {
+  const onClick = (event: React.MouseEvent<SVGEllipseElement>) => {
     if (event.detail === 2) {
       setIsEditing(true);
     }
@@ -27,15 +39,20 @@ export const Rect: React.FC<ShapeProps> = ({
     setIsEditing(false);
   };
 
+  const cx = x + width / 2;
+  const cy = y + height / 2;
+  const rx = width / 2;
+  const ry = height / 2;
+
   return (
-    <g className="rect">
-      <rect
+    <g className="ellipse">
+      <ellipse
         id={id}
-        x={x}
-        y={y}
-        width={width}
-        height={height}
-        className="rect-shape draggable"
+        cx={cx}
+        cy={cy}
+        rx={rx}
+        ry={ry}
+        className="ellipse-shape draggable"
         onClick={onClick}
       />
       <EditableText
@@ -50,3 +67,5 @@ export const Rect: React.FC<ShapeProps> = ({
     </g>
   );
 };
+
+export default Ellipse;

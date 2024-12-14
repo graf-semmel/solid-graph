@@ -1,12 +1,13 @@
 // DraggableRectTool.ts
-import { RectProps } from "../shapes/Rect";
+import { ShapeProps, ShapeType } from "../shapes/Shape";
 import { Tool } from "./Canvas";
 
 const NEW_RECT_ID = "rect-new";
 
 export const DraggableRectTool = (
-  setRects: React.Dispatch<React.SetStateAction<RectProps[]>>,
-  currentOffset: { x: number; y: number }
+  setRects: React.Dispatch<React.SetStateAction<ShapeProps[]>>,
+  currentOffset: { x: number; y: number },
+  shapeType: ShapeType
 ): Tool => {
   let isDragging = false;
   let startX: number = 0;
@@ -20,8 +21,9 @@ export const DraggableRectTool = (
     startX = event.clientX - currentOffset.x;
     startY = event.clientY - currentOffset.y;
 
-    const newRect: RectProps = {
+    const newRect: ShapeProps = {
       id: NEW_RECT_ID,
+      type: shapeType,
       text: "New Rect",
       x: startX,
       y: startY,

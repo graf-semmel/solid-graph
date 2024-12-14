@@ -2,10 +2,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./BaseShape.css";
 
-interface BaseShapeProps {
+interface ShapeContainerProps {
   id: string;
   isSelected: boolean;
-  onShapeClick: (id: string, event: React.MouseEvent<SVGGElement>) => void;
   children: React.ReactNode;
 }
 
@@ -122,10 +121,9 @@ const EdgeHandles: React.FC<{
   );
 };
 
-const BaseShape: React.FC<BaseShapeProps> = ({
+export const ShapeContainer: React.FC<ShapeContainerProps> = ({
   id,
   isSelected,
-  onShapeClick,
   children,
 }) => {
   const shapeRef = useRef<SVGGElement>(null);
@@ -142,16 +140,10 @@ const BaseShape: React.FC<BaseShapeProps> = ({
     }
   }, [children]);
 
-  // const handleClick = (e: React.MouseEvent<SVGGElement>) => {
-  // console.log(`Clicked ${id}`);
-  // onShapeClick(id, e);
-  // };
-
   return (
     <g>
       <g
         ref={shapeRef}
-        // onClick={handleClick}
         className={isSelected ? "base-shape active" : "base-shape"}
       >
         {children}
@@ -176,5 +168,3 @@ const BaseShape: React.FC<BaseShapeProps> = ({
     </g>
   );
 };
-
-export default BaseShape;

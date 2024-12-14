@@ -1,8 +1,8 @@
-import { RectProps } from "../shapes/Rect";
+import { ShapeProps } from "../shapes/Rect";
 import { Tool } from "./Canvas";
 
 export const SelectionTool = (
-  setRects: React.Dispatch<React.SetStateAction<RectProps[]>>
+  setRects: React.Dispatch<React.SetStateAction<ShapeProps[]>>
 ): Tool => {
   let tool: Tool | null = null;
 
@@ -41,7 +41,7 @@ export const SelectionTool = (
 };
 
 function DragElementTool(
-  setRects: React.Dispatch<React.SetStateAction<RectProps[]>>
+  setRects: React.Dispatch<React.SetStateAction<ShapeProps[]>>
 ): Tool {
   let isDragging = false;
   let startX: number = 0;
@@ -118,7 +118,7 @@ function DragElementTool(
 type ResizeDirection = "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw";
 
 function ResizeElementTool(
-  setRects: React.Dispatch<React.SetStateAction<RectProps[]>>
+  setRects: React.Dispatch<React.SetStateAction<ShapeProps[]>>
 ): Tool {
   let isResizing = false;
   let startX: number = 0;

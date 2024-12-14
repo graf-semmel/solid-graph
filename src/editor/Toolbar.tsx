@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState } from "react";
 import "./Toolbar.css";
 import { Icons } from "./Icons";
 
-export type ToolType = "grab" | "select" | "rect";
+export type ToolType = "grab" | "select" | "rect" | "ellipse" | "diamond";
 
 type Tool = {
   icon: JSX.Element;
@@ -15,6 +15,8 @@ const tools: Tool[] = [
   { icon: <Icons.DragMoveIcon />, type: "grab", key: "1" },
   { icon: <Icons.Pointer />, type: "select", key: "2" },
   { icon: <Icons.Rect />, type: "rect", key: "3" },
+  { icon: <Icons.Circle />, type: "ellipse", key: "4" },
+  { icon: <Icons.Diamond />, type: "diamond", key: "5" },
 ];
 
 export const Toolbar: React.FC<{
