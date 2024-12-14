@@ -9,6 +9,7 @@ import { Ellipse } from "../shapes/Ellipse";
 import { ShapeProps } from "../shapes/Shape";
 import { ShapeContainer } from "../shapes/BaseShape";
 import { Rect } from "../shapes/Rect";
+import { Diamond } from "../shapes/Diamond";
 
 // Define the interface for the drag state
 export interface Tool {
@@ -127,8 +128,8 @@ const Canvas: React.FC = () => {
         return <Rect {...shape} />;
       case "ellipse":
         return <Ellipse {...shape} />;
-      // case "diamond":
-      // return <Diamond {...shape} />;
+      case "diamond":
+        return <Diamond {...shape} />;
       default:
         return null;
     }

@@ -1,4 +1,4 @@
-import { ShapeProps } from "../shapes/Rect";
+import { ShapeProps } from "../shapes/Shape";
 import { Tool } from "./Canvas";
 
 export const SelectionTool = (
