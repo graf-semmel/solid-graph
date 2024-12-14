@@ -1,11 +1,10 @@
-// DraggableRectTool.ts
 import { ShapeProps, ShapeType } from "../shapes/Shape";
 import { Tool } from "./Canvas";
 
-const NEW_RECT_ID = "rect-new";
+const NEW_SHAPE_ID = "__new_shape__";
 
-export const DraggableRectTool = (
-  setRects: React.Dispatch<React.SetStateAction<ShapeProps[]>>,
+export const ShapeTool = (
+  setShapes: React.Dispatch<React.SetStateAction<ShapeProps[]>>,
   currentOffset: { x: number; y: number },
   shapeType: ShapeType
 ): Tool => {
@@ -14,17 +13,17 @@ export const DraggableRectTool = (
   let startY: number = 0;
 
   function onMouseDown(event: React.MouseEvent<SVGSVGElement>) {
-    console.group("DraggableRectTool");
+    console.group("ShapeTool");
     console.log("onMouseDown");
 
     isDragging = true;
     startX = event.clientX - currentOffset.x;
     startY = event.clientY - currentOffset.y;
 
-    const newRect: ShapeProps = {
-      id: NEW_RECT_ID,
+    const newShape: ShapeProps = {
+      id: NEW_SHAPE_ID,
       type: shapeType,
-      text: "New Rect",
+      text: "New shape",
       x: startX,
       y: startY,
       width: 0,
@@ -33,13 +32,13 @@ export const DraggableRectTool = (
       isEditingText: false,
     };
 
-    setRects((prevRects) => [
-      ...prevRects.map((p) => ({
+    setShapes((existingShapes) => [
+      ...existingShapes.map((p) => ({
         ...p,
         isSelected: false,
         isEditingText: false,
       })),
-      newRect,
+      newShape,
     ]);
   }
 
@@ -53,18 +52,18 @@ export const DraggableRectTool = (
     const width = Math.abs(currentX - startX);
     const height = Math.abs(currentY - startY);
 
-    setRects((prevRects) =>
-      prevRects.map((rect) => {
-        if (rect.id === NEW_RECT_ID) {
+    setShapes((existingShapes) =>
+      existingShapes.map((shape) => {
+        if (shape.id === NEW_SHAPE_ID) {
           return {
-            ...rect,
+            ...shape,
             width,
             height,
             x: currentX < startX ? currentX : startX,
             y: currentY < startY ? currentY : startY,
           };
         }
-        return rect;
+        return shape;
       })
     );
   }
@@ -75,29 +74,29 @@ export const DraggableRectTool = (
     if (!isDragging) return;
 
     isDragging = false;
-    setRects((prevRects) => {
-      const newRectIndex = prevRects.findIndex(
-        (rect) => rect.id === NEW_RECT_ID
+    setShapes((existingShapes) => {
+      const newShapeIndex = existingShapes.findIndex(
+        (shape) => shape.id === NEW_SHAPE_ID
       );
 
-      if (newRectIndex === -1) {
-        console.warn("new rect not found");
+      if (newShapeIndex === -1) {
+        console.warn("new shape not found");
         console.groupEnd();
-        return prevRects;
+        return existingShapes;
       }
 
-      const newRect = prevRects[newRectIndex];
-      if (newRect.width <= 10 || newRect.height <= 10) {
-        console.log("new rect too small, removing");
+      const newShape = existingShapes[newShapeIndex];
+      if (newShape.width <= 10 || newShape.height <= 10) {
+        console.log("new shape too small, removing");
         console.groupEnd();
-        return prevRects.filter((rect) => rect.id !== NEW_RECT_ID);
+        return existingShapes.filter((shape) => shape.id !== NEW_SHAPE_ID);
       }
 
-      newRect.id = `rect-${Date.now()}`;
-      newRect.isEditingText = true;
-      console.log("adding new rect", newRect);
+      newShape.id = `shape-${Date.now()}`;
+      newShape.isEditingText = true;
+      console.log("adding new shape", newShape);
       console.groupEnd();
-      return [...prevRects];
+      return [...existingShapes];
     });
   }
 

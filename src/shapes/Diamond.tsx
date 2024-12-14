@@ -1,9 +1,10 @@
+// Diamond.tsx
 import React, { useState } from "react";
 import { EditableText } from "./EditableText";
-import "./Circle.css";
+import "./Diamond.css";
 import { ShapeProps } from "./Shape";
 
-const Ellipse: React.FC<ShapeProps> = ({
+export const Diamond: React.FC<ShapeProps> = ({
   id,
   text: initialText = "",
   isSelected,
@@ -16,7 +17,7 @@ const Ellipse: React.FC<ShapeProps> = ({
   const [text, setText] = useState(initialText);
   const [isEditing, setIsEditing] = useState(isEditingText);
 
-  const onClick = (event: React.MouseEvent<SVGEllipseElement>) => {
+  const onClick = (event: React.MouseEvent<SVGPathElement>) => {
     if (event.detail === 2) {
       setIsEditing(true);
     }
@@ -27,20 +28,20 @@ const Ellipse: React.FC<ShapeProps> = ({
     setIsEditing(false);
   };
 
-  const cx = x + width / 2;
-  const cy = y + height / 2;
-  const rx = width / 2;
-  const ry = height / 2;
+  const diamondPath = `
+    M ${x + width / 2} ${y}
+    L ${x + width} ${y + height / 2}
+    L ${x + width / 2} ${y + height}
+    L ${x} ${y + height / 2}
+    Z
+  `;
 
   return (
-    <g className="ellipse">
-      <ellipse
+    <g className="diamond">
+      <path
         id={id}
-        cx={cx}
-        cy={cy}
-        rx={rx}
-        ry={ry}
-        className="ellipse-shape draggable"
+        d={diamondPath}
+        className="diamond-shape draggable"
         onClick={onClick}
       />
       <EditableText
@@ -55,5 +56,3 @@ const Ellipse: React.FC<ShapeProps> = ({
     </g>
   );
 };
-
-export default Ellipse;

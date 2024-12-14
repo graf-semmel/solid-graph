@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./Canvas.css";
 import { Toolbar, ToolType } from "./Toolbar";
 import { DragCanvasTool, CanvasState } from "./DragCanvasTool";
-import { DraggableRectTool } from "./DraggableRectTool";
+import { ShapeTool } from "./ShapeTool";
 import { SelectionTool } from "./SelectionTool";
 import { Ellipse } from "../shapes/Ellipse";
 import { ShapeProps } from "../shapes/Shape";
@@ -19,7 +19,7 @@ export interface Tool {
   onShapeClick: (id: string, event: React.MouseEvent<SVGElement>) => void;
 }
 
-const initialRects: ShapeProps[] = [
+const initialShapes: ShapeProps[] = [
   {
     id: "1",
     type: "rect",
@@ -34,7 +34,7 @@ const initialRects: ShapeProps[] = [
   {
     id: "2",
     type: "ellipse",
-    text: "Rect 2",
+    text: "Ellipse 2",
     x: -150,
     y: -150,
     width: 100,
@@ -45,7 +45,7 @@ const initialRects: ShapeProps[] = [
   {
     id: "3",
     type: "diamond",
-    text: "Rect 3",
+    text: "Diamond 3",
     x: 100,
     y: 100,
     width: 50,
@@ -56,7 +56,7 @@ const initialRects: ShapeProps[] = [
 ];
 
 const Canvas: React.FC = () => {
-  const [shapes, setRects] = useState<ShapeProps[]>(initialRects);
+  const [shapes, setShapes] = useState<ShapeProps[]>(initialShapes);
   const [canvasState, setCanvasState] = useState<CanvasState>({
     isDragging: false,
     initialMousePosition: { x: 0, y: 0 },
@@ -65,7 +65,7 @@ const Canvas: React.FC = () => {
   const canvasRef = useRef<SVGSVGElement>(null);
   const toolTypeRef = useRef<ToolType>("rect");
   const [tool, setTool] = useState<Tool>(
-    DraggableRectTool(setRects, canvasState.currentOffset, "rect")
+    ShapeTool(setShapes, canvasState.currentOffset, "rect")
   );
 
   useEffect(() => {
@@ -75,12 +75,12 @@ const Canvas: React.FC = () => {
       const { width, height } = canvas.getBoundingClientRect();
       const offsetX = width / 2;
       const offsetY = height / 2;
-      // update initial rects
-      setRects(
-        shapes.map((rect) => ({
-          ...rect,
-          x: rect.x + offsetX,
-          y: rect.y + offsetY,
+      // update initial shapes
+      setShapes(
+        shapes.map((shapes) => ({
+          ...shapes,
+          x: shapes.x + offsetX,
+          y: shapes.y + offsetY,
         }))
       );
     }
@@ -93,8 +93,8 @@ const Canvas: React.FC = () => {
     }
 
     if (tool !== "select") {
-      setRects((prevRects) =>
-        prevRects.map((rect) => ({ ...rect, isSelected: false }))
+      setShapes((existingShapes) =>
+        existingShapes.map((shape) => ({ ...shape, isSelected: false }))
       );
     }
 
@@ -104,20 +104,16 @@ const Canvas: React.FC = () => {
         setTool(DragCanvasTool(setCanvasState));
         break;
       case "select":
-        setTool(SelectionTool(setRects));
+        setTool(SelectionTool(setShapes));
         break;
       case "rect":
-        setTool(DraggableRectTool(setRects, canvasState.currentOffset, "rect"));
+        setTool(ShapeTool(setShapes, canvasState.currentOffset, "rect"));
         break;
       case "ellipse":
-        setTool(
-          DraggableRectTool(setRects, canvasState.currentOffset, "ellipse")
-        );
+        setTool(ShapeTool(setShapes, canvasState.currentOffset, "ellipse"));
         break;
       case "diamond":
-        setTool(
-          DraggableRectTool(setRects, canvasState.currentOffset, "diamond")
-        );
+        setTool(ShapeTool(setShapes, canvasState.currentOffset, "diamond"));
         break;
     }
   }

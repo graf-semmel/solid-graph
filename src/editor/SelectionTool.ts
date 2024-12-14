@@ -2,7 +2,7 @@ import { ShapeProps } from "../shapes/Shape";
 import { Tool } from "./Canvas";
 
 export const SelectionTool = (
-  setRects: React.Dispatch<React.SetStateAction<ShapeProps[]>>
+  setShapes: React.Dispatch<React.SetStateAction<ShapeProps[]>>
 ): Tool => {
   let tool: Tool | null = null;
 
@@ -10,11 +10,11 @@ export const SelectionTool = (
     const target = event.target as SVGElement;
     if (target.classList.contains("draggable")) {
       console.group("DragElementTool");
-      tool = DragElementTool(setRects);
+      tool = DragElementTool(setShapes);
     }
     if (target.classList.contains("resizable")) {
       console.group("ResizeElementTool");
-      tool = ResizeElementTool(setRects);
+      tool = ResizeElementTool(setShapes);
     }
     console.log("on mouse down", target);
     tool?.onMouseDown(event);
@@ -41,7 +41,7 @@ export const SelectionTool = (
 };
 
 function DragElementTool(
-  setRects: React.Dispatch<React.SetStateAction<ShapeProps[]>>
+  setShapes: React.Dispatch<React.SetStateAction<ShapeProps[]>>
 ): Tool {
   let isDragging = false;
   let startX: number = 0;
@@ -63,13 +63,13 @@ function DragElementTool(
     startX = event.clientX;
     startY = event.clientY;
     selectedElementId = target.id;
-    setRects((prevRects) =>
-      prevRects.map((rect) => {
-        rect.isSelected = false;
-        if (rect.id === selectedElementId) {
-          return { ...rect, isSelected: true };
+    setShapes((prevShapes) =>
+      prevShapes.map((shape) => {
+        shape.isSelected = false;
+        if (shape.id === selectedElementId) {
+          return { ...shape, isSelected: true };
         }
-        return rect;
+        return shape;
       })
     );
   }
@@ -81,18 +81,18 @@ function DragElementTool(
     const deltaX = event.clientX - startX;
     const deltaY = event.clientY - startY;
 
-    setRects((prevRects) =>
-      prevRects.map((rect) => {
-        rect.isSelected = false;
-        if (rect.id === selectedElementId) {
+    setShapes((prevShapes) =>
+      prevShapes.map((shape) => {
+        shape.isSelected = false;
+        if (shape.id === selectedElementId) {
           return {
-            ...rect,
-            x: rect.x + deltaX,
-            y: rect.y + deltaY,
+            ...shape,
+            x: shape.x + deltaX,
+            y: shape.y + deltaY,
             isSelected: true,
           };
         }
-        return rect;
+        return shape;
       })
     );
 
@@ -115,16 +115,16 @@ function DragElementTool(
   };
 }
 
-type ResizeDirection = "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw";
+type ResizeDishapeion = "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw";
 
 function ResizeElementTool(
-  setRects: React.Dispatch<React.SetStateAction<ShapeProps[]>>
+  setShapes: React.Dispatch<React.SetStateAction<ShapeProps[]>>
 ): Tool {
   let isResizing = false;
   let startX: number = 0;
   let startY: number = 0;
   let targetId: string | null = null;
-  let resizeDirection:
+  let resizeDishapeion:
     | "n"
     | "s"
     | "e"
@@ -152,19 +152,19 @@ function ResizeElementTool(
       console.error("Resizable element must have an origin attribute");
       return;
     }
-    resizeDirection = target.getAttribute("origin") as ResizeDirection;
-    console.log("resize direction", resizeDirection);
+    resizeDishapeion = target.getAttribute("origin") as ResizeDishapeion;
+    console.log("resize dishapeion", resizeDishapeion);
 
     isResizing = true;
     startX = event.clientX;
     startY = event.clientY;
-    setRects((prevRects) =>
-      prevRects.map((rect) => {
-        rect.isSelected = false;
-        if (rect.id === targetId) {
-          return { ...rect, isSelected: true };
+    setShapes((prevShapes) =>
+      prevShapes.map((shape) => {
+        shape.isSelected = false;
+        if (shape.id === targetId) {
+          return { ...shape, isSelected: true };
         }
-        return rect;
+        return shape;
       })
     );
   }
@@ -175,73 +175,76 @@ function ResizeElementTool(
     const deltaX = event.clientX - startX;
     const deltaY = event.clientY - startY;
 
-    setRects((prevRects) =>
-      prevRects.map((rect) => {
-        if (rect.id === targetId) {
-          let newRect = { ...rect };
-          switch (resizeDirection) {
+    setShapes((prevShapes) =>
+      prevShapes.map((shape) => {
+        if (shape.id === targetId) {
+          let newShape = { ...shape };
+          switch (resizeDishapeion) {
             case "n":
-              newRect = {
-                ...rect,
-                y: rect.height - deltaY >= minSize ? rect.y + deltaY : rect.y,
-                height: Math.max(rect.height - deltaY, minSize),
+              newShape = {
+                ...shape,
+                y:
+                  shape.height - deltaY >= minSize ? shape.y + deltaY : shape.y,
+                height: Math.max(shape.height - deltaY, minSize),
               };
               break;
             case "s":
-              newRect = {
-                ...rect,
-                height: Math.max(rect.height + deltaY, minSize),
+              newShape = {
+                ...shape,
+                height: Math.max(shape.height + deltaY, minSize),
               };
               break;
             case "e":
-              newRect = {
-                ...rect,
-                width: Math.max(rect.width + deltaX, minSize),
+              newShape = {
+                ...shape,
+                width: Math.max(shape.width + deltaX, minSize),
               };
               break;
             case "w":
-              newRect = {
-                ...rect,
-                x: rect.width - deltaX >= minSize ? rect.x + deltaX : rect.x,
-                width: Math.max(rect.width - deltaX, minSize),
+              newShape = {
+                ...shape,
+                x: shape.width - deltaX >= minSize ? shape.x + deltaX : shape.x,
+                width: Math.max(shape.width - deltaX, minSize),
               };
               break;
             case "ne":
-              newRect = {
-                ...rect,
-                y: rect.height - deltaY >= minSize ? rect.y + deltaY : rect.y,
-                height: Math.max(rect.height - deltaY, minSize),
-                width: Math.max(rect.width + deltaX, minSize),
+              newShape = {
+                ...shape,
+                y:
+                  shape.height - deltaY >= minSize ? shape.y + deltaY : shape.y,
+                height: Math.max(shape.height - deltaY, minSize),
+                width: Math.max(shape.width + deltaX, minSize),
               };
               break;
             case "nw":
-              newRect = {
-                ...rect,
-                x: rect.width - deltaX >= minSize ? rect.x + deltaX : rect.x,
-                y: rect.height - deltaY >= minSize ? rect.y + deltaY : rect.y,
-                width: Math.max(rect.width - deltaX, minSize),
-                height: Math.max(rect.height - deltaY, minSize),
+              newShape = {
+                ...shape,
+                x: shape.width - deltaX >= minSize ? shape.x + deltaX : shape.x,
+                y:
+                  shape.height - deltaY >= minSize ? shape.y + deltaY : shape.y,
+                width: Math.max(shape.width - deltaX, minSize),
+                height: Math.max(shape.height - deltaY, minSize),
               };
               break;
             case "se":
-              newRect = {
-                ...rect,
-                height: Math.max(rect.height + deltaY, minSize),
-                width: Math.max(rect.width + deltaX, minSize),
+              newShape = {
+                ...shape,
+                height: Math.max(shape.height + deltaY, minSize),
+                width: Math.max(shape.width + deltaX, minSize),
               };
               break;
             case "sw":
-              newRect = {
-                ...rect,
-                x: rect.width - deltaX >= minSize ? rect.x + deltaX : rect.x,
-                width: Math.max(rect.width - deltaX, minSize),
-                height: Math.max(rect.height + deltaY, minSize),
+              newShape = {
+                ...shape,
+                x: shape.width - deltaX >= minSize ? shape.x + deltaX : shape.x,
+                width: Math.max(shape.width - deltaX, minSize),
+                height: Math.max(shape.height + deltaY, minSize),
               };
               break;
           }
-          return newRect;
+          return newShape;
         }
-        return rect;
+        return shape;
       })
     );
 
@@ -253,7 +256,7 @@ function ResizeElementTool(
   function onMouseUp() {
     isResizing = false;
     targetId = null;
-    resizeDirection = null;
+    resizeDishapeion = null;
   }
 
   return {
